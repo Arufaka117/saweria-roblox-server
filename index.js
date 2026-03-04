@@ -10,15 +10,13 @@ app.get("/", (req, res) => {
 
 app.post("/saweria-webhook", (req, res) => {
   const data = req.body;
-
-  // Log semua field yang dikirim Saweria (penting buat debug!)
   console.log("Raw webhook data:", JSON.stringify(data));
 
   latestDonation = {
     name: data.donator_name || data.name || "Unknown",
     amount: data.amount_raw || data.amount || 0,
     message: data.message || "",
-    id: Date.now().toString() // ID unik pakai timestamp
+    id: Date.now().toString()
   };
 
   console.log("Donation masuk:", latestDonation);
