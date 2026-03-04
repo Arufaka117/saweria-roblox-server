@@ -3,23 +3,31 @@ const app = express();
 
 app.use(express.json());
 
-let lastDonation = null;
-
-app.post("/webhook", (req, res) => {
-    lastDonation = req.body;
-    console.log("Donasi masuk:", lastDonation);
-    res.sendStatus(200);
-});
-
-app.get("/donation", (req, res) => {
-    res.json(lastDonation);
-});
+let latestDonation = null;
 
 app.get("/", (req, res) => {
-    res.send("Server Saweria ke Roblox aktif!");
+  res.json({ status: "ok" });
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log("Server jalan di port", PORT);
+app.post("/saweria-webhook", (req, res) => {
+  const data = req.body;
+
+  latestDonation = {
+    name: data.donator_name,
+    amount: data.amount_raw,
+    message: data.message
+  };
+
+  console.log("Donation masuk:", latestDonation);
+
+  res.sendStatus(200);
+});
+
+app.get("/latest-donation", (req, res) => {
+  res.json(latestDonation);
+});
+
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log("Server running on port " + port);
 });
